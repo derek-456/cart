@@ -16,7 +16,11 @@
         <!-- main -->
         <div class="main_container">
             <div class="goodsList_container">
-                <div class="goodsItem" v-for="item in goodsList" :key="item.id">
+                <div
+                    class="goodsItem"
+                    v-for="(item, index) in goodsList"
+                    :key="item.id"
+                >
                     <div class="goodsFrom_wrap">
                         <input
                             class="checkbox"
@@ -47,7 +51,7 @@
                         <div class="goods_info_col">
                             <div class="goods_name">
                                 <i class="iconfont icon-shuang"></i>
-                                {{ item.goods_name }}
+                                <span>{{ item.goods_name }}</span>
                             </div>
                             <div class="goods_type">
                                 {{ item.goods_type }}
@@ -62,19 +66,13 @@
                                     ￥{{ item.goods_price }}
                                 </div>
                                 <div class="goods_num_wrap">
-                                    <div
-                                        class="edit"
-                                        @click="add(item.goods_id, -1)"
-                                    >
+                                    <div class="edit" @click="add(index, -1)">
                                         -
                                     </div>
                                     <div class="goods_num">
                                         {{ item.goods_num }}
                                     </div>
-                                    <div
-                                        class="edit"
-                                        @click="add(item.goods_id, 1)"
-                                    >
+                                    <div class="edit" @click="add(index, 1)">
                                         +
                                     </div>
                                 </div>
@@ -112,7 +110,7 @@
                     <div class="clear">清理</div>
                     <div class="collect">移入收藏夹</div>
                 </div>
-                <div class="delect">删除</div>
+                <div class="delect" @click="deleteCart">删除</div>
             </template>
         </div>
     </div>
@@ -154,7 +152,7 @@ export default {
                     goods_from: "吾女士旗舰店",
                     goods_type: "标准款-橄榄绿；M",
                     goods_price: 85,
-                    goods_num: 1,
+                    goods_num: 2,
                     checked: true,
                     goods_img:
                         "http://image5.suning.cn/uimg/b2c/newcatentries/0070160068-000000000681043886_2_400x400.jpg",
@@ -208,6 +206,13 @@ export default {
             this.totalNum = totalNum;
             this.allChecked = allChecked;
         },
+        deleteCart(){
+            if(this.allChecked){
+                this.goodsList = [];
+            }else{
+                this.goodsList = this.goodsList.filter(item=>item.checked===false);
+            }
+        },
         //全选功能
         changeAll() {
             this.allChecked = !this.allChecked;
@@ -217,11 +222,11 @@ export default {
             this.setCart();
         },
         //增减功能
-        add(id, b) {
-            let index = this.goodsList.findIndex(
-                (item) => item.goods_id === id
-            );
-            if ((this.goodsList[index].goods_num = 1 && b === -1)) {
+        add(index, b) {
+            // let index = this.goodsList.findIndex(
+            //     (item) => item.goods_id === id
+            // );
+            if (this.goodsList[index].goods_num === 1 && b === -1) {
                 this.goodsList[index] = this.goodsList[
                     this.goodsList.length - 1
                 ];
@@ -278,7 +283,7 @@ export default {
         border-radius: 10px;
 
         // padding: 10px;
-        .goodsItem:last-child{
+        .goodsItem:last-child {
             margin-bottom: 110px;
         }
         .goodsItem {
